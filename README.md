@@ -1,75 +1,105 @@
-# Predictive Analysis of Chronic Disease Morbidity
+# 🏥 Predictive Analysis of Chronic Disease Morbidity — PEMEX
 
-## Project Overview
-This project presents a comprehensive analysis of morbidity data from Petróleos Mexicanos (PEMEX), sourced from official public records spanning from 2016 to the first quarter of 2025. The primary objective is to develop a dual-pronged analytical framework:
+![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white)
+![LightGBM](https://img.shields.io/badge/LightGBM-Gradient%20Boosting-9cf)
+![Prophet](https://img.shields.io/badge/Prophet-Time%20Series-blueviolet)
+![PowerBI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-  1. Explanatory Analysis: To identify the key pathological drivers and conditions that most       significantly influence the incidence of chronic diseases within the population.
-  
-  2. Predictive Forecasting: To accurately forecast the volume of chronic disease cases for the       next two years (8 quarters), providing valuable insights for resource planning and               preventive healthcare strategies.
+A dual-pronged analytical framework applied to **official PEMEX morbidity data (2016–Q1 2025)** to identify the key drivers of chronic disease incidence and forecast case volumes for the next two years — broken down by 8 demographic groups.
 
-The final results are consolidated and presented in a 3-page interactive Power BI dashboard, offering a clear and accessible overview of historical trends, key drivers, and future forecasts.
+Results are consolidated in a **3-page interactive Power BI dashboard**.
 
-## Methodology
-The project was executed in two major phases, leveraging distinct datasets and modeling techniques to address the core objectives.
+---
 
-### Part 1: Explanatory Modeling with LightGBM & SHAP
-This phase focused on understanding the "why" behind chronic disease cases using annual data from 2016 to 2022.
+## 🎯 Objectives
 
-  ### Data Preprocessing & Feature Engineering:
-  
-  The raw data was systematically cleaned to remove non-relevant information such as headers,      totals, and descriptive text.
-  
-  Age-based columns were consolidated into 8 distinct demographic groups (e.g., 0-15_F, 60+_M)     to create meaningful segments for analysis.
-  
-  A target variable, cronicas, was engineered by aggregating a curated list of relevant chronic    diseases.
-  
-  Padecimientos considered fortuitous (e.g., dog bites) or irrelevant were discarded, while        pathologies with known correlations to chronic conditions were retained as features.
-  
-  ### Modeling and Interpretation:
-  
-  A LightGBM Regressor model was trained to predict the cronicas target variable. The model's      hyperparameters were optimized using RandomizedSearchCV.
-  
-  The model was rigorously validated through learning curves, validation curves, and residual      analysis to ensure robustness and prevent overfitting.
-  
-  SHAP (SHapley Additive exPlanations) was employed to interpret the "black box" model,            providing clear, quantitative insights into which features had the most significant impact on    predicting chronic diseases. The analysis revealed that conditions indicating general frailty,   such as malnutrition and pneumonia, were surprisingly strong predictors.
+1. **Explanatory Analysis** — Identify which pathological conditions most significantly drive chronic disease incidence using LightGBM + SHAP
+2. **Predictive Forecasting** — Forecast chronic disease cases for the next 8 quarters (2025-Q2 to 2027-Q1) using Prophet
 
-### Part 2: Time Series Forecasting with Prophet
-This phase focused on predicting future trends using a consistent, quarterly time series.
+---
 
-  ### Temporal Disaggregation:
+## 🔬 Methodology
 
-  A challenge was the differing granularity of the data: annual from 2016-2022 and quarterly       from 2023-2025.
+### Part 1 — Explanatory Modeling (LightGBM + SHAP)
 
-  To create a unified time series, a temporal disaggregation process was implemented. The real     seasonal patterns observed in the 2023-2024 quarterly data were used as a reference to           intelligently break down the annual totals from 2016-2022 into quarterly estimates.
+| Step | Detail |
+|---|---|
+| Data Source | Annual PEMEX morbidity records, 2016–2022 |
+| Feature Engineering | Age-based demographic groups (e.g., `0-15_F`, `60+_M`), chronic disease target variable |
+| Model | LightGBM Regressor, tuned with `RandomizedSearchCV` |
+| Validation | Learning curves, validation curves, residual analysis |
+| Interpretability | SHAP values — revealed that malnutrition and pneumonia are strong predictors of chronic disease |
 
-  This resulted in a single, consistent dataset (pemex_trimestres_all.csv) with a quarterly        frequency from 2016 to Q1 2025, suitable for time series modeling.
+### Part 2 — Time Series Forecasting (Prophet)
 
-  ### Model Selection and Optimization:
-  
-  Both SARIMA and Prophet models were initially tested with baseline parameters. Prophet           demonstrated superior performance and stability on this dataset.
-  
-  A grid search was performed to find the optimal hyperparameters for Prophet for each of the 8    demographic groups, tuning parameters like changepoint_prior_scale, seasonality_prior_scale,     and seasonality_mode.
+| Step | Detail |
+|---|---|
+| Data Source | Quarterly PEMEX data, 2023–Q1 2025 |
+| Challenge | Mixed granularity: annual (2016–2022) + quarterly (2023–2025) |
+| Solution | Temporal disaggregation using real seasonal patterns as reference |
+| Model Selection | Prophet outperformed SARIMA on this dataset |
+| Tuning | Grid search over `changepoint_prior_scale`, `seasonality_prior_scale`, `seasonality_mode` |
+| Output | 8-quarter forecast per demographic group with prediction intervals |
 
-  ### Forecasting:
-  
-  With the optimized parameters, a final Prophet model was trained for each demographic group.
-  
-  A forecast was generated for the next 8 quarters (2025-Q2 to 2027-Q1), complete with             prediction intervals to quantify uncertainty.
+---
 
-# Deliverables
+## 📊 Deliverables
 
-  1. Explanatory Insights: The LightGBM and SHAP analysis identified the top predictors for       chronic disease incidence, providing a clear hierarchy of influential factors.
-  
-  2. Time Series Forecast: A robust 2-year forecast for chronic disease cases for 8 distinct       demographic groups, visualized through a master chart and individual component plots (trend      and seasonality).
-  
-  3. Interactive Power BI Dashboard: A comprehensive 3-page dashboard that serves as the primary   deliverable for this project. It includes:
-  
-  Page 1: Historical Analysis: An interactive view of the historical data.
+| Deliverable | Description |
+|---|---|
+| Explanatory Insights | SHAP feature importance ranking for chronic disease predictors |
+| Time Series Forecast | 2-year forecast for 8 demographic groups with uncertainty intervals |
+| Power BI Dashboard | 3-page interactive dashboard (historical, drivers, forecast) |
+| Exported Data | `importancias_lightgbm.csv`, `pronostico_prophet.csv` |
 
-  Page 2: Predictive Drivers: A visualization of the feature importances from the LightGBM model.
+---
 
-  Page 3: Future Forecast: An interactive chart displaying the Prophet forecast for the next two   years.
-  
-  -The dashboard file (.pbix) and screenshots are available in this repository.
+## 📁 Project Structure
 
-Exported Data: The key data artifacts, including feature importances (importancias_lightgbm.csv) and the final forecast (pronostico_prophet.csv), have been exported for use in the dashboard and for further analysis.
+```
+Predictive_Analysis_of_Chronic_Disease_Morbidity_PEMEX/
+├── Databases/              # Raw and processed datasets
+├── Notebook/               # Jupyter notebooks (EDA, modeling, forecasting)
+├── PowerBi Dashboard/      # .pbix file and screenshots
+└── README.md
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Tools |
+|---|---|
+| Language | Python 3.10+ |
+| ML / Explainability | LightGBM, SHAP, Scikit-learn |
+| Time Series | Prophet, SARIMA (statsmodels) |
+| Data | Pandas, NumPy |
+| Visualization | Matplotlib, Seaborn, Power BI |
+| Notebook | Jupyter / Google Colab |
+
+---
+
+## 🚀 Getting Started
+
+```bash
+git clone https://github.com/Pavel-Aguilar/Predictive_Analysis_of_Chronic_Disease_Morbidity_PEMEX.git
+cd Predictive_Analysis_of_Chronic_Disease_Morbidity_PEMEX
+pip install lightgbm shap prophet scikit-learn pandas matplotlib seaborn
+```
+
+Open the notebooks in `Notebook/` sequentially — EDA first, then modeling, then forecasting.
+
+---
+
+## 👤 About
+
+Built as part of the Master's in AI & Data Analytics at UACJ. This project applies ML and time series forecasting to real public health data from one of Mexico's largest state-owned enterprises.
+
+[![GitHub](https://img.shields.io/badge/GitHub-Pavel--Aguilar-181717?logo=github)](https://github.com/Pavel-Aguilar)
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE)
